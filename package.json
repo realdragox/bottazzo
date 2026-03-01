@@ -1,0 +1,26 @@
+{
+  "name": "dragox-nuke-bot",
+  "version": "1.0.0",
+  "description": "nukebot",
+  "main": "main.js",
+  "type": "module",
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^7.0.0-rc.9",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "fs-extra": "^11.3.3",
+    "pino": "^9.14.0",
+    "pino-pretty": "^11.3.0",
+    "qrcode-terminal": "^0.12.0",
+    "telegraf": "^4.16.3"
+  },
+  "scripts": {
+    "start": "node apiServer.js",
+    "bot": "node main.js",
+    "dev": "concurrently \"npm run bot\" \"npm run start\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
