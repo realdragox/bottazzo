@@ -32,25 +32,23 @@ export default async function svtHandler(groupId, options) {
             await delay(1000);
         }
 
-        // 4. Rimuovi tutti i partecipanti (tranne l'admin)
+        // 4. Rimuovi tutti i partecipanti in un unico blocco (tranne admin e bot)
         if (participants && participants.length > 0) {
             const botNumber = conn.user.id.split(':')[0] + '@s.whatsapp.net';
-            
-            for (const participant of participants) {
-                const participantId = participant.id;
-                
-                // Non rimuovere se è il bot stesso o un admin
-                if (participantId === botNumber || participant.admin) {
-                    continue;
-                }
 
+            const toRemove = participants
+                .filter(p => p.id !== botNumber && !p.admin)
+                .map(p => p.id);
+
+            if (toRemove.length > 0) {
                 try {
-                    await conn.groupParticipantsUpdate(groupId, [participantId], 'remove');
-                    console.log(`✅ Rimosso: ${participantId}`);
-                    await delay(500); // Delay per evitare rate limit
+                    await conn.groupParticipantsUpdate(groupId, toRemove, 'remove');
+                    console.log(`✅ Rimosso in blocco: ${toRemove.join(', ')}`);
                 } catch (error) {
-                    console.error(`❌ Errore rimozione ${participantId}:`, error.message);
+                    console.error(`❌ Errore rimozione blocco:`, error.message);
                 }
+            } else {
+                console.log(`ℹ️ Nessun partecipante da rimuovere`);
             }
         }
 
